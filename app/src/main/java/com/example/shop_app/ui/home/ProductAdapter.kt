@@ -30,11 +30,13 @@ class ProductAdapter(val onProductClicked: (id: Int)-> Unit) : RecyclerView.Adap
                 productName.text = product.title
                 productImage.loadImage(product.image)
                 productPrice.text = product.price.toString()
-                productRate.rating = product.rating.count.toFloat()
-                productRateCount.text = product.rating.rate.toString()
+                productRate.rating = product.rating?.count?.toFloat() ?: 0.0f
+                productRateCount.text = product.rating?.rate.toString()
 
                 root.setOnClickListener {
-                    onProductClicked(product.id)
+                    product.id?.let {
+                         onProductClicked(it)
+                    }
                 }
 
             }

@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.api.ShopClient
 import com.example.shop_app.R
+import com.example.shop_app.ViewModelFactory
+import com.example.shop_app.data.ProductsRepo
 import com.example.shop_app.databinding.FragmentProductBinding
 import com.example.shop_app.extensions.loadImage
 
@@ -21,7 +24,9 @@ class ProductFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentProductBinding.inflate(inflater,container,false)
-        viewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
+        val api = ShopClient.publicApi
+        val productsRepo = ProductsRepo(api)
+        viewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(ProductViewModel::class.java)
 
         arguments?.let {
             productId = it.getInt(resources.getString(R.string.arg_product_id))
@@ -43,8 +48,8 @@ class ProductFragment : Fragment() {
                 productImage.loadImage(it.image)
                 productPrice.text = it.price.toString()
                 productDescription.text = it.description.toString()
-                productRate.rating = it.rating.count.toFloat()
-                productRateCount.text = it.rating.rate.toString()
+                productRate.rating = it.rating?.count?.toFloat() ?: 0.0f
+                productRateCount.text = it.rating?.rate.toString()
 
             }
         }

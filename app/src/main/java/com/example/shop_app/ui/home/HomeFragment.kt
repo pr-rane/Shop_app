@@ -12,7 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.api.ShopClient
 import com.example.shop_app.R
+import com.example.shop_app.ViewModelFactory
+import com.example.shop_app.data.ProductsRepo
 import com.example.shop_app.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -27,7 +30,9 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        val api = ShopClient.publicApi
+        val productsRepo = ProductsRepo(api)
+        homeViewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(HomeViewModel::class.java)
         productAdapter = ProductAdapter{ openProduct(it) }
 
         arguments?.let {

@@ -2,6 +2,7 @@ package com.example.api.services
 
 import com.example.api.models.entities.LoginData
 import com.example.api.models.entities.Product
+import com.example.api.models.responses.LoginResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -10,7 +11,7 @@ interface ShopAPI {
     @GET("products")
     suspend fun getAllProducts(
         @Query("limit")limit: Int? = null,
-        @Query("sort")sort: String? = null,
+        @Query("sort")sort: String? = null
     )
     :Response<List<Product>>
 
@@ -32,7 +33,7 @@ interface ShopAPI {
     @POST("auth/login")
     suspend fun loginUser(
         @Body login: LoginData
-    ):Response<String>
+    ):Response<LoginResponse>
 
 
 

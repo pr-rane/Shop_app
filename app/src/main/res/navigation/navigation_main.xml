@@ -21,23 +21,34 @@
 
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.shop_app.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" >
-        <action
-            android:id="@+id/action_gallery_openHome"
-            app:destination="@id/nav_home"
-            app:popUpTo="@id/nav_gallery">
-            <argument android:name="@string/arg_category_name"
-                app:argType="string" />
-        </action>
-    </fragment>
-
+<!--    <fragment-->
+<!--        android:id="@+id/nav_gallery"-->
+<!--        android:name="com.example.shop_app.ui.gallery.GalleryFragment"-->
+<!--        android:label="@string/menu_gallery"-->
+<!--        tools:layout="@layout/fragment_gallery" >-->
+<!--        <action-->
+<!--            android:id="@+id/action_gallery_openHome"-->
+<!--            app:destination="@id/nav_home"-->
+<!--            app:popUpTo="@id/nav_gallery">-->
+<!--            <argument android:name="@string/arg_category_name"-->
+<!--                app:argType="string" />-->
+<!--        </action>-->
+<!--    </fragment>-->
+            <action
+                android:id="@+id/action_gallery_openHome"
+                app:destination="@id/nav_home"
+                app:popUpTo="@id/nav_gallery">
+                <argument android:name="@string/arg_category_name"
+                    app:argType="string" />
+            </action>
     <fragment
         android:id="@+id/nav_product"
         android:name="com.example.shop_app.ui.product.ProductFragment"
         tools:layout="@layout/fragment_product" />
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.shop_app.ui.auth.LoginFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login" />
 
 </navigation>

@@ -8,19 +8,19 @@ import com.example.api.models.entities.Product
 import com.example.shop_app.data.ProductsRepo
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(private val productRepo:ProductsRepo) : ViewModel() {
 
     private val _products = MutableLiveData<List<Product>>()
 
     val products: LiveData<List<Product>> = _products
 
     fun fetchProducts() = viewModelScope.launch {
-        ProductsRepo.getProducts().let {
+        productRepo.getProducts().let {
             _products.postValue(it)
         }
     }
     fun fetchProductsByCategory(category: String?) = viewModelScope.launch {
-        ProductsRepo.getProductsByCategory(category).let {
+        productRepo.getProductsByCategory(category).let {
             _products.postValue(it)
         }
     }

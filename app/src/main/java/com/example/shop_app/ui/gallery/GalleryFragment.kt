@@ -9,6 +9,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.api.ShopClient
+import com.example.shop_app.ViewModelFactory
+import com.example.shop_app.data.ProductsRepo
 import com.example.shop_app.databinding.FragmentGalleryBinding
 
 
@@ -23,8 +26,10 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val api = ShopClient.publicApi
+        val productsRepo = ProductsRepo(api)
         galleryViewModel =
-            ViewModelProvider(this).get(GalleryViewModel::class.java)
+            ViewModelProvider(this,ViewModelFactory(productsRepo)).get(GalleryViewModel::class.java)
 
 
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)

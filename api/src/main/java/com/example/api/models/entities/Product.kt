@@ -11,13 +11,13 @@ data class Product(
     @Json(name = "description")
     val description: String,
     @Json(name = "id")
-    val id: Int,
+    val id: Int?,
     @Json(name = "image")
     val image: String,
     @Json(name = "price")
     val price: Double,
     @Json(name = "rating")
-    val rating: Rating,
+    val rating: Rating?,
     @Json(name = "title")
     val title: String
 )

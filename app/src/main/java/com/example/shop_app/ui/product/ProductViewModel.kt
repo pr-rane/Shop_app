@@ -4,19 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.api.ShopClient
 import com.example.api.models.entities.Product
+import com.example.shop_app.data.ProductsRepo
 import kotlinx.coroutines.launch
 
-class ProductViewModel : ViewModel() {
+class ProductViewModel(private val productRepo:ProductsRepo) : ViewModel() {
 
-    val api = ShopClient.publicApi
     private val _product = MutableLiveData<Product>()
 
     val product: LiveData<Product> = _product
 
     fun fetchProduct(productId: Int) = viewModelScope.launch {
-        val response = api.getProductById(productId)
+        val response = productRepo.getProduct(productId)
 
         response.body()?.let {
             _product.postValue(it)

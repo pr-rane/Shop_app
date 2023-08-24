@@ -7,15 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.shop_app.data.ProductsRepo
 import kotlinx.coroutines.launch
 
-class GalleryViewModel : ViewModel() {
-
+class GalleryViewModel(private val productRepo:ProductsRepo) : ViewModel() {
 
     private val _categories = MutableLiveData<List<String>>()
 
     val categories: LiveData<List<String>> = _categories
 
     fun fetchCategories() = viewModelScope.launch {
-        ProductsRepo.getCategories().let {
+        productRepo.getCategories().let {
             _categories.postValue(it)
         }
     }

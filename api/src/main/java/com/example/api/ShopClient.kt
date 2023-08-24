@@ -1,6 +1,7 @@
 package com.example.api
 
 import com.example.api.services.ShopAPI
+import com.example.api.services.ShopAuthAPI
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -23,6 +24,10 @@ object ShopClient {
         .build()
         .create(ShopAPI::class.java)
 
+    val authApi = retrofitBuilder
+        .client(okHttpBuilder.build())
+        .build()
+        .create(ShopAuthAPI::class.java)
 
 
 
