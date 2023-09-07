@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.api.ShopClient
-import com.example.shop_app.ViewModelFactory
-import com.example.shop_app.data.ProductsRepo
+import com.example.shop_app.ShopApplication
 import com.example.shop_app.databinding.FragmentGalleryBinding
+import com.example.shop_app.viewmodels.GalleryViewModel
 
 
 class GalleryFragment : Fragment() {
@@ -26,10 +24,10 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val api = ShopClient.publicApi
-        val productsRepo = ProductsRepo(api)
-        galleryViewModel =
-            ViewModelProvider(this,ViewModelFactory(productsRepo)).get(GalleryViewModel::class.java)
+//        val api = ShopClient.publicApi
+//        val productsRepo = ProductsRepo(api)
+//        galleryViewModel =
+//            ViewModelProvider(this,ViewModelFactory(productsRepo)).get(GalleryViewModel::class.java)
 
 
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
@@ -43,7 +41,8 @@ class GalleryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        galleryViewModel.fetchCategories()
+        galleryViewModel = (requireActivity().application as ShopApplication).applicationComponent.getGalleryVM()
+
         galleryViewModel.categories.observe(viewLifecycleOwner){
             adapter.clear()
             adapter.addAll(it)

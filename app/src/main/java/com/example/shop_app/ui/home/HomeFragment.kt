@@ -5,18 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.api.ShopClient
 import com.example.shop_app.R
-import com.example.shop_app.ViewModelFactory
-import com.example.shop_app.data.ProductsRepo
+import com.example.shop_app.ShopApplication
 import com.example.shop_app.databinding.FragmentHomeBinding
+import com.example.shop_app.viewmodels.HomeViewModel
 
 class HomeFragment : Fragment() {
 
@@ -30,9 +26,9 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val api = ShopClient.publicApi
-        val productsRepo = ProductsRepo(api)
-        homeViewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(HomeViewModel::class.java)
+//        val api = ShopClient.publicApi
+//        val productsRepo = ProductsRepo(api)
+//        homeViewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(HomeViewModel::class.java)
         productAdapter = ProductAdapter{ openProduct(it) }
 
         arguments?.let {
@@ -48,8 +44,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        homeViewModel = (requireActivity().application as ShopApplication).applicationComponent.getHomeVM()
+
         if (categoryName==null) {
-            homeViewModel.fetchProducts()
         }else {
             homeViewModel.fetchProductsByCategory(categoryName)
         }
@@ -59,7 +56,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun openProduct(productId: Int){
+    private fun openProduct(productId: Int){
         findNavController().navigate(
             R.id.action_home_openProduct,
             bundleOf(

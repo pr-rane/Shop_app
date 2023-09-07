@@ -8,9 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.api.ShopClient
 import com.example.shop_app.R
-import com.example.shop_app.ViewModelFactory
+import com.example.shop_app.ShopApplication
 import com.example.shop_app.data.ProductsRepo
 import com.example.shop_app.databinding.FragmentLoginBinding
+import com.example.shop_app.viewmodels.LoginViewModel
 
 class LoginFragment : Fragment() {
 
@@ -28,9 +29,10 @@ class LoginFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val api = ShopClient.publicApi
-        val productsRepo = ProductsRepo(api)
-        viewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(LoginViewModel::class.java)
+//        val api = ShopClient.publicApi
+//        val productsRepo = ProductsRepo(api)
+//        viewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(LoginViewModel::class.java)
+        viewModel = (requireActivity().application as ShopApplication).applicationComponent.getLoginVM()
 
         _binding?.apply {
             loginButton.setOnClickListener{

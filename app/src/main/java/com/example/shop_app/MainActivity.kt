@@ -8,20 +8,15 @@ import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.example.api.ShopClient
-import com.example.shop_app.data.ProductsRepo
 import com.example.shop_app.databinding.ActivityMainBinding
-import com.example.shop_app.ui.auth.LoginViewModel
-import com.example.shop_app.ui.gallery.GalleryViewModel
+import com.example.shop_app.viewmodels.LoginViewModel
+import com.example.shop_app.viewmodels.GalleryViewModel
 import com.google.android.material.navigation.NavigationView
 import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,13 +35,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         sharedPreferences = getSharedPreferences(PREF_FILE_AUTH, MODE_PRIVATE)
-
-        val api = ShopClient.publicApi
-        val productsRepo = ProductsRepo(api)
-        galleryViewModel =
-            ViewModelProvider(this,ViewModelFactory(productsRepo)).get(GalleryViewModel::class.java)
-
-        authViewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(LoginViewModel::class.java)
+        (application as ShopApplication).applicationComponent.inject(this)
+//        val api = ShopClient.providesShopAPI()
+//        val productsRepo = ProductsRepo(api)
+//        galleryViewModel =
+//            ViewModelProvider(this,ViewModelFactory(productsRepo)).get(GalleryViewModel::class.java)
+//
+//        authViewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(LoginViewModel::class.java)
+        authViewModel = (application as ShopApplication).applicationComponent.getLoginVM()
+        galleryViewModel = (application as ShopApplication).applicationComponent.getGalleryVM()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -96,7 +93,6 @@ class MainActivity : AppCompatActivity() {
             navController.navigateUp()
         }
 
-        galleryViewModel.fetchCategories()
         galleryViewModel.categories.observe(this) {
             val menu = navView.menu.getItem(1)?.subMenu
             if(menu!=null){

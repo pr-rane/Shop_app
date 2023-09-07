@@ -8,10 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.api.ShopClient
 import com.example.shop_app.R
-import com.example.shop_app.ViewModelFactory
+import com.example.shop_app.ShopApplication
 import com.example.shop_app.data.ProductsRepo
 import com.example.shop_app.databinding.FragmentProductBinding
 import com.example.shop_app.extensions.loadImage
+import com.example.shop_app.viewmodels.ProductViewModel
 
 class ProductFragment : Fragment() {
 
@@ -24,9 +25,10 @@ class ProductFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentProductBinding.inflate(inflater,container,false)
-        val api = ShopClient.publicApi
-        val productsRepo = ProductsRepo(api)
-        viewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(ProductViewModel::class.java)
+//        val api = ShopClient.publicApi
+//        val productsRepo = ProductsRepo(api)
+//        viewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(ProductViewModel::class.java)
+        viewModel = (requireActivity().application as ShopApplication).applicationComponent.getProductVM()
 
         arguments?.let {
             productId = it.getInt(resources.getString(R.string.arg_product_id))
