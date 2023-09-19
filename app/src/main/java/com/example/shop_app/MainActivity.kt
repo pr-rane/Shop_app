@@ -8,15 +8,20 @@ import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.shop_app.databinding.ActivityMainBinding
+import com.example.shop_app.di.ActivityComponent
+import com.example.shop_app.di.DaggerActivityComponent
+import com.example.shop_app.di.DaggerAppComponent
 import com.example.shop_app.viewmodels.LoginViewModel
 import com.example.shop_app.viewmodels.GalleryViewModel
 import com.google.android.material.navigation.NavigationView
 import java.util.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,24 +31,31 @@ class MainActivity : AppCompatActivity() {
     }
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private lateinit var galleryViewModel: GalleryViewModel
-    private lateinit var authViewModel: LoginViewModel
+    lateinit var galleryViewModel: GalleryViewModel
+    lateinit var authViewModel: LoginViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var sharedPreferences: SharedPreferences
 
+    lateinit var activityComponent: ActivityComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedPreferences = getSharedPreferences(PREF_FILE_AUTH, MODE_PRIVATE)
-        (application as ShopApplication).applicationComponent.inject(this)
+        val appComponent = (application as ShopApplication).appComponent
+        activityComponent = DaggerActivityComponent
+            .factory().create(appComponent)
+        activityComponent.inject(this)
 //        val api = ShopClient.providesShopAPI()
 //        val productsRepo = ProductsRepo(api)
 //        galleryViewModel =
 //            ViewModelProvider(this,ViewModelFactory(productsRepo)).get(GalleryViewModel::class.java)
 //
 //        authViewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(LoginViewModel::class.java)
-        authViewModel = (application as ShopApplication).applicationComponent.getLoginVM()
-        galleryViewModel = (application as ShopApplication).applicationComponent.getGalleryVM()
+        authViewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
+        galleryViewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

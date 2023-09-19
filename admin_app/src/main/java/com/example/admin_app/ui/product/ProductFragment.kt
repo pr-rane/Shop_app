@@ -23,11 +23,6 @@ class ProductFragment : Fragment() {
         return _binding?.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

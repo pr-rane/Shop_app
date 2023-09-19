@@ -2,6 +2,7 @@ package com.example.shop_app.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.shop_app.annotations.ActivityScope
 import com.example.shop_app.data.ProductsRepo
 import dagger.Binds
 import dagger.MapKey
@@ -12,7 +13,7 @@ import javax.inject.Provider
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 
-@Singleton
+@ActivityScope
 class ViewModelFactory @Inject constructor(private val viewModels: MutableMap<Class<out ViewModel>,
         Provider<ViewModel>>) : ViewModelProvider.Factory {
 

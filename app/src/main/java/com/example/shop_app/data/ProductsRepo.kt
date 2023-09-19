@@ -9,6 +9,8 @@ import com.example.api.services.ShopAPI
 import dagger.Module
 import dagger.Provides
 import javax.inject.Inject
+import javax.inject.Singleton
+
 
 class ProductsRepo @Inject constructor(private val api: ShopAPI) {
     val _products = MutableLiveData<List<Product>>()

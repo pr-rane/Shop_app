@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.shop_app.MainActivity
 import com.example.shop_app.ShopApplication
 import com.example.shop_app.databinding.FragmentGalleryBinding
 import com.example.shop_app.viewmodels.GalleryViewModel
+import com.example.shop_app.viewmodels.LoginViewModel
 
 
 class GalleryFragment : Fragment() {
@@ -41,7 +44,9 @@ class GalleryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        galleryViewModel = (requireActivity().application as ShopApplication).applicationComponent.getGalleryVM()
+//        galleryViewModel = (requireActivity().application as ShopApplication).activityComponent.getGalleryVM()
+        val viewModelFactory = (activity as MainActivity).viewModelFactory
+        galleryViewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
         galleryViewModel.categories.observe(viewLifecycleOwner){
             adapter.clear()

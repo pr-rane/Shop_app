@@ -1,16 +1,15 @@
 package com.example.shop_app.ui.auth
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.api.ShopClient
-import com.example.shop_app.R
+import androidx.lifecycle.ViewModelProvider
+import com.example.shop_app.MainActivity
 import com.example.shop_app.ShopApplication
-import com.example.shop_app.data.ProductsRepo
 import com.example.shop_app.databinding.FragmentLoginBinding
+import com.example.shop_app.viewmodels.HomeViewModel
 import com.example.shop_app.viewmodels.LoginViewModel
 
 class LoginFragment : Fragment() {
@@ -32,7 +31,9 @@ class LoginFragment : Fragment() {
 //        val api = ShopClient.publicApi
 //        val productsRepo = ProductsRepo(api)
 //        viewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(LoginViewModel::class.java)
-        viewModel = (requireActivity().application as ShopApplication).applicationComponent.getLoginVM()
+//        viewModel = (requireActivity().application as ShopApplication).activityComponent.getLoginVM()
+        val viewModelFactory = (activity as MainActivity).viewModelFactory
+        viewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
 
         _binding?.apply {
             loginButton.setOnClickListener{

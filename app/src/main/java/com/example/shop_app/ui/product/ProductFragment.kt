@@ -1,17 +1,17 @@
 package com.example.shop_app.ui.product
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.api.ShopClient
+import androidx.lifecycle.ViewModelProvider
+import com.example.shop_app.MainActivity
 import com.example.shop_app.R
 import com.example.shop_app.ShopApplication
-import com.example.shop_app.data.ProductsRepo
 import com.example.shop_app.databinding.FragmentProductBinding
 import com.example.shop_app.extensions.loadImage
+import com.example.shop_app.viewmodels.GalleryViewModel
 import com.example.shop_app.viewmodels.ProductViewModel
 
 class ProductFragment : Fragment() {
@@ -28,7 +28,9 @@ class ProductFragment : Fragment() {
 //        val api = ShopClient.publicApi
 //        val productsRepo = ProductsRepo(api)
 //        viewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(ProductViewModel::class.java)
-        viewModel = (requireActivity().application as ShopApplication).applicationComponent.getProductVM()
+//        viewModel = (requireActivity().application as ShopApplication).activityComponent.getProductVM()
+        val viewModelFactory = (activity as MainActivity).viewModelFactory
+        viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
         arguments?.let {
             productId = it.getInt(resources.getString(R.string.arg_product_id))

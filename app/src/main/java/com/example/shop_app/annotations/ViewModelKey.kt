@@ -1,7 +1,8 @@
-package com.example.shop_app
+package com.example.shop_app.annotations
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey
+import javax.inject.Scope
 import kotlin.reflect.KClass
 
 

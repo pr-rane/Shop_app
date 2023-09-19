@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.shop_app.MainActivity
 import com.example.shop_app.R
 import com.example.shop_app.ShopApplication
 import com.example.shop_app.databinding.FragmentHomeBinding
 import com.example.shop_app.viewmodels.HomeViewModel
+import com.example.shop_app.viewmodels.LoginViewModel
 
 class HomeFragment : Fragment() {
 
@@ -44,12 +47,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel = (requireActivity().application as ShopApplication).applicationComponent.getHomeVM()
+//        homeViewModel = (requireActivity().application as ShopApplication).activityComponent.getHomeVM()
+        val viewModelFactory = (activity as MainActivity).viewModelFactory
+        homeViewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
 
-        if (categoryName==null) {
-        }else {
+//        if (categoryName==null) {
+//
+//        }else {
             homeViewModel.fetchProductsByCategory(categoryName)
-        }
+//        }
         homeViewModel.products.observe(viewLifecycleOwner) {
             productAdapter.updateProductList(it)
             Log.e("productID:",it.get(0).id.toString())

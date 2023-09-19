@@ -1,15 +1,20 @@
 package com.example.shop_app.di
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.shop_app.ViewModelKey
+import com.example.shop_app.annotations.ViewModelKey
 import com.example.shop_app.viewmodels.*
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class ViewModelModule {
+abstract class ViewModelModule() {
+
+    @Binds
+    internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
