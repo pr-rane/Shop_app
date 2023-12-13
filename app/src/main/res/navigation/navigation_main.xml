@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.shop_app.ui.fragments.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_openProduct"
+            app:destination="@id/nav_product"
+            app:popUpTo="@id/nav_home" >
+            <argument android:name="@string/arg_product_id"
+                app:argType="integer" />
+
+        </action>
+
+    </fragment>
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_gallery"-->
+<!--        android:name="com.example.shop_app.ui.gallery.GalleryFragment"-->
+<!--        android:label="@string/menu_gallery"-->
+<!--        tools:layout="@layout/fragment_gallery" >-->
+<!--        <action-->
+<!--            android:id="@+id/action_gallery_openHome"-->
+<!--            app:destination="@id/nav_home"-->
+<!--            app:popUpTo="@id/nav_gallery">-->
+<!--            <argument android:name="@string/arg_category_name"-->
+<!--                app:argType="string" />-->
+<!--        </action>-->
+<!--    </fragment>-->
+            <action
+                android:id="@+id/action_gallery_openHome"
+                app:destination="@id/nav_home"
+                app:popUpTo="@id/nav_gallery">
+                <argument android:name="@string/arg_category_name"
+                    app:argType="string" />
+            </action>
+    <fragment
+        android:id="@+id/nav_product"
+        android:name="com.example.shop_app.ui.fragments.product.ProductFragment"
+        tools:layout="@layout/fragment_product" />
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.shop_app.ui.fragments.auth.LoginFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login" />
+
+</navigation>

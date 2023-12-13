@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5dp"
+    android:layout_margin="2.5dp"
+    app:cardElevation="0dp"
+    android:clipChildren="true"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="0dp"
+    android:id="@+id/productCard"
+    app:cardBackgroundColor="#ffffff">
+
+        <LinearLayout
+            android:id="@+id/productdetail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        >
+
+            <ImageView
+                android:id="@+id/productImage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                tools:srcCompat="@tools:sample/avatars"
+                android:scaleType="fitCenter" />
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="product name" />
+
+            <TextView
+                android:id="@+id/productPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="10rs" />
+
+            <RelativeLayout
+                android:id="@+id/relative_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+            <RatingBar
+                android:id="@+id/productRate"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rating="3" />
+
+                <TextView
+                    android:id="@+id/productRateCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/productRate"
+                    android:text="rate count" />
+
+            </RelativeLayout>
+    </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/productBuyBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/addcart_btn"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:layout_weight="0"
+                />
+        </LinearLayout>
+
+</androidx.cardview.widget.CardView>
