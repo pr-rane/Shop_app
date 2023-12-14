@@ -2,7 +2,7 @@ package com.example.shop_app.di.module
 
 import android.content.Context
 import com.example.shop_app.ShopApplication
-import com.example.shop_app.data.api.ShopClient
+import com.example.shop_app.data.api.ShopAPI
 import com.example.shop_app.di.ApplicationContext
 import com.example.shop_app.di.BaseUrl
 import dagger.Module
@@ -41,13 +41,13 @@ class ApplicationModule(private val application: ShopApplication) {
         @BaseUrl baseUrl: String,
         moshiConverterFactory: MoshiConverterFactory,
         okHttpBuilder: OkHttpClient.Builder
-    ): ShopClient {
+    ): ShopAPI {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(moshiConverterFactory)
             .client(okHttpBuilder.build())
             .build()
-            .create(ShopClient::class.java)
+            .create(ShopAPI::class.java)
     }
 
 }

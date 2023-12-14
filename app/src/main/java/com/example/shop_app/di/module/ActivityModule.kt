@@ -10,7 +10,6 @@ import com.example.shop_app.ui.viewmodels.GalleryViewModel
 import com.example.shop_app.ui.viewmodels.HomeViewModel
 import com.example.shop_app.ui.viewmodels.LoginViewModel
 import com.example.shop_app.ui.viewmodels.ProductViewModel
-import com.example.shop_app.viewmodels.*
 import dagger.Module
 import dagger.Provides
 
@@ -24,39 +23,32 @@ class ActivityModule(private val activity: AppCompatActivity) {
     }
 
     @Provides
-    fun providegalleryViewModel(productsRepo: ProductsRepo): GalleryViewModel {
-        return ViewModelProvider(activity,
-            ViewModelFactory(GalleryViewModel::class) {
-                GalleryViewModel(productsRepo)
-            })[GalleryViewModel::class.java]
+    fun provideViewModelFactory(productsRepo: ProductsRepo):ViewModelFactory{
+        return ViewModelFactory(productsRepo)
     }
 
     @Provides
-    fun providehomeViewModel(productsRepo: ProductsRepo): HomeViewModel {
+    fun providegalleryViewModel(viewModelFactory: ViewModelFactory): GalleryViewModel {
         return ViewModelProvider(activity,
-            ViewModelFactory(HomeViewModel::class) {
-                HomeViewModel(productsRepo)
-            })[HomeViewModel::class.java]
+            viewModelFactory)[GalleryViewModel::class.java]
     }
 
     @Provides
-    fun provideloginViewModel(productsRepo: ProductsRepo): LoginViewModel {
+    fun providehomeViewModel(viewModelFactory: ViewModelFactory): HomeViewModel {
         return ViewModelProvider(activity,
-            ViewModelFactory(LoginViewModel::class) {
-                LoginViewModel(productsRepo)
-            })[LoginViewModel::class.java]
+            viewModelFactory)[HomeViewModel::class.java]
     }
 
     @Provides
-    fun provideproductViewModel(productsRepo: ProductsRepo): ProductViewModel {
+    fun provideloginViewModel(viewModelFactory: ViewModelFactory): LoginViewModel {
         return ViewModelProvider(activity,
-            ViewModelFactory(ProductViewModel::class) {
-                ProductViewModel(productsRepo)
-            })[ProductViewModel::class.java]
+            viewModelFactory)[LoginViewModel::class.java]
     }
 
-
-//    @Provides
-//    fun provideTopHeadlineAdapter() = TopHeadlineAdapter(ArrayList())
+    @Provides
+    fun provideproductViewModel(viewModelFactory: ViewModelFactory): ProductViewModel {
+        return ViewModelProvider(activity,
+            viewModelFactory)[ProductViewModel::class.java]
+    }
 
 }

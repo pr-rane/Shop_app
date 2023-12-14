@@ -7,18 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.shop_app.ui.MainActivity
 import com.example.shop_app.R
 import com.example.shop_app.databinding.FragmentHomeBinding
+import com.example.shop_app.ui.base.UiState
+import com.example.shop_app.ui.extensions.getActivityComponent
 import com.example.shop_app.ui.viewmodels.HomeViewModel
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private lateinit var homeViewModel: HomeViewModel
+//    private lateinit var homeViewModel: HomeViewModel
+
+    private val homeViewModel: HomeViewModel by viewModels {
+        getActivityComponent().viewModelsFactory()
+    }
     private lateinit var productAdapter: ProductAdapter
     private var categoryName: String? = null
 
@@ -48,17 +55,21 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        homeViewModel = (requireActivity().application as ShopApplication).activityComponent.getHomeVM()
-        val viewModelFactory = (activity as MainActivity).viewModelFactory
-        homeViewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
+//        val viewModelFactory = (activity as MainActivity).viewModelFactory
 
+//        homeViewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
 //        if (categoryName==null) {
 //
 //        }else {
             homeViewModel.fetchProductsByCategory(categoryName)
 //        }
-        homeViewModel.products.observe(viewLifecycleOwner) {
-            productAdapter.updateProductList(it)
-            Log.e("productID:",it.get(0).id.toString())
+        lifecycleScope.launch {
+            homeViewModel.products.collect{
+                if (it is UiState.Success){
+                    productAdapter.updateProductList(it.data)
+                    Log.e("productID:",it.data.get(0).id.toString())
+                }
+            }
         }
     }
 

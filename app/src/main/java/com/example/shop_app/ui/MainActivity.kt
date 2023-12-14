@@ -21,7 +21,9 @@ import com.example.shop_app.ShopApplication
 import com.example.shop_app.databinding.ActivityMainBinding
 import com.example.shop_app.di.component.ActivityComponent
 import com.example.shop_app.di.component.DaggerActivityComponent
+import com.example.shop_app.di.module.ActivityModule
 import com.example.shop_app.ui.base.UiState
+import com.example.shop_app.ui.base.ViewModelFactory
 import com.example.shop_app.ui.viewmodels.LoginViewModel
 import com.example.shop_app.ui.viewmodels.GalleryViewModel
 import com.google.android.material.navigation.NavigationView
@@ -41,19 +43,23 @@ class MainActivity : AppCompatActivity() {
     lateinit var authViewModel: LoginViewModel
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var sharedPreferences: SharedPreferences
 
     lateinit var activityComponent: ActivityComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val appComponent = (application as ShopApplication).appComponent
+        activityComponent = DaggerActivityComponent
+            .builder()
+            .appComponent(appComponent)
+            .activityModule(ActivityModule(this))
+            .build()
+        activityComponent.inject(this)
         super.onCreate(savedInstanceState)
 
         sharedPreferences = getSharedPreferences(PREF_FILE_AUTH, MODE_PRIVATE)
-        val appComponent = (application as ShopApplication).appComponent
-        activityComponent = DaggerActivityComponent
-            .factory().create(appComponent)
-        activityComponent.inject(this)
 //        val api = ShopClient.providesShopAPI()
 //        val productsRepo = ProductsRepo(api)
 //        galleryViewModel =
@@ -100,18 +106,22 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        authViewModel.user.observe(this){
-            updateMenu(it)
-            it?.let { t->
-                sharedPreferences.edit{
-                    putString(PREF_KEY_TOKEN,t)
-                }
-            } ?: run{
-                sharedPreferences.edit{
-                    remove(PREF_KEY_TOKEN)
+        lifecycleScope.launch {
+            authViewModel.user.collect{
+                if (it is UiState.Success){
+                    updateMenu(it.data)
+                    it.data?.let { token->
+                        sharedPreferences.edit{
+                            putString(PREF_KEY_TOKEN,token)
+                        }
+                    } ?: run{
+                        sharedPreferences.edit{
+                            remove(PREF_KEY_TOKEN)
+                        }
+                    }
+                    navController.navigateUp()
                 }
             }
-            navController.navigateUp()
         }
 
         lifecycleScope.launch {

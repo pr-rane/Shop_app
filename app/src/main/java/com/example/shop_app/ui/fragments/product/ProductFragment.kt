@@ -5,16 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.shop_app.ui.MainActivity
 import com.example.shop_app.R
 import com.example.shop_app.databinding.FragmentProductBinding
+import com.example.shop_app.ui.base.UiState
+import com.example.shop_app.ui.extensions.getActivityComponent
 import com.example.shop_app.ui.extensions.loadImage
+import com.example.shop_app.ui.viewmodels.LoginViewModel
 import com.example.shop_app.ui.viewmodels.ProductViewModel
+import kotlinx.coroutines.launch
 
 class ProductFragment : Fragment() {
 
-    private lateinit var viewModel: ProductViewModel
+//    private lateinit var viewModel: ProductViewModel
+
+    private val viewModel: ProductViewModel by viewModels {
+        getActivityComponent().viewModelsFactory()
+    }
     private var _binding: FragmentProductBinding? = null
     private var productId: Int? = null
 
@@ -27,8 +37,8 @@ class ProductFragment : Fragment() {
 //        val productsRepo = ProductsRepo(api)
 //        viewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(ProductViewModel::class.java)
 //        viewModel = (requireActivity().application as ShopApplication).activityComponent.getProductVM()
-        val viewModelFactory = (activity as MainActivity).viewModelFactory
-        viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
+//        val viewModelFactory = (activity as MainActivity).viewModelFactory
+//        viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
         arguments?.let {
             productId = it.getInt(resources.getString(R.string.arg_product_id))
@@ -43,16 +53,20 @@ class ProductFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        viewModel.product.observe(viewLifecycleOwner){
-            _binding?.apply {
-                productName.text = it.title
-                productImage.loadImage(it.image)
-                productPrice.text = it.price.toString()
-                productDescription.text = it.description.toString()
-                productRate.rating = it.rating?.count?.toFloat() ?: 0.0f
-                productRateCount.text = it.rating?.rate.toString()
-
+        lifecycleScope.launch {
+            viewModel.product.collect{
+                if (it is UiState.Success){
+                    it.data.let {product ->
+                        _binding?.apply {
+                            productName.text = product.title
+                            productImage.loadImage(product.image)
+                            productPrice.text = product.price.toString()
+                            productDescription.text = product.description.toString()
+                            productRate.rating = product.rating?.count?.toFloat() ?: 0.0f
+                            productRateCount.text = product.rating?.rate.toString()
+                        }
+                    }
+                }
             }
         }
 

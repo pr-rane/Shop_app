@@ -15,13 +15,13 @@ interface ShopAPI {
         @Query("limit")limit: Int? = null,
         @Query("sort")sort: String? = null
     )
-    :Response<List<Product>>
+    :List<Product>
 
     @GET("products/{id}")
     suspend fun getProductById(
         @Path("id") id: Int
     )
-    :Response<Product>
+    :Product
 
     @GET("products/categories")
     suspend fun getAllCategories()
@@ -30,12 +30,12 @@ interface ShopAPI {
     @GET("products/category/{category}")
     suspend fun getProductsByCategory(
         @Path("category") category: String?
-    ):Response<List<Product>>
+    ):List<Product>
 
     @POST("auth/login")
     suspend fun loginUser(
         @Body login: LoginData
-    ):Response<LoginResponse>
+    ):LoginResponse
 
 
 }

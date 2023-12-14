@@ -11,8 +11,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@ActivityScope
-class GalleryViewModel @Inject constructor(private val productRepo: ProductsRepo) : ViewModel() {
+class GalleryViewModel(private val productRepo: ProductsRepo) : ViewModel() {
     private val _categories = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
 
     val categories: StateFlow<UiState<List<String>>> = _categories

@@ -2,7 +2,6 @@ package com.example.shop_app.di.component
 
 import android.content.Context
 import com.example.shop_app.ShopApplication
-import com.example.shop_app.data.api.ShopClient
 import com.example.shop_app.data.api.ShopAPI
 import com.example.shop_app.data.repo.ProductsRepo
 import com.example.shop_app.di.ApplicationContext

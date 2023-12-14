@@ -7,17 +7,27 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.shop_app.ui.MainActivity
 import com.example.shop_app.databinding.FragmentGalleryBinding
+import com.example.shop_app.ui.base.UiState
+import com.example.shop_app.ui.extensions.getActivityComponent
 import com.example.shop_app.ui.viewmodels.GalleryViewModel
+import com.example.shop_app.ui.viewmodels.LoginViewModel
+import kotlinx.coroutines.launch
 
 
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
-    private lateinit var galleryViewModel: GalleryViewModel
+//    private lateinit var galleryViewModel: GalleryViewModel
+
+    private val galleryViewModel: GalleryViewModel by viewModels {
+        getActivityComponent().viewModelsFactory()
+    }
     private lateinit var adapter: ArrayAdapter<String>
 
     override fun onCreateView(
@@ -43,12 +53,16 @@ class GalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        galleryViewModel = (requireActivity().application as ShopApplication).activityComponent.getGalleryVM()
-        val viewModelFactory = (activity as MainActivity).viewModelFactory
-        galleryViewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
+//        val viewModelFactory = (activity as MainActivity).viewModelFactory
+//        galleryViewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
-        galleryViewModel.categories.observe(viewLifecycleOwner){
-            adapter.clear()
-            adapter.addAll(it)
+        lifecycleScope.launch {
+            galleryViewModel.categories.collect{
+                adapter.clear()
+                if (it is UiState.Success){
+                    adapter.addAll(it.data)
+                }
+            }
         }
         _binding?.apply {
             // Implement On Item click listener

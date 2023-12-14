@@ -6,7 +6,7 @@ import com.example.shop_app.data.models.entities.Name
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = false)
+@JsonClass(generateAdapter = true)
 data class UserResponse(
     @Json(name = "address")
     val address: Address,
