@@ -10,6 +10,7 @@ import javax.inject.Singleton
 @Singleton
 interface ShopAPI {
 
+    @Headers("Content-Type: application/json")
     @GET("products")
     suspend fun getAllProducts(
         @Query("limit")limit: Int? = null,

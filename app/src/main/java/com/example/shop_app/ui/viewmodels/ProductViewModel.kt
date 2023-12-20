@@ -11,17 +11,10 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class ProductViewModel(private val productRepo: ProductsRepo) : ViewModel() {
-    private val _product = MutableStateFlow<UiState<Product>>(UiState.Loading)
-    val product: StateFlow<UiState<Product>> = _product
-
+    val product: StateFlow<UiState<Product>>
+        get() = productRepo.product
     fun fetchProduct(productId: Int) = viewModelScope.launch {
         productRepo.getProduct(productId)
-            .catch { e ->
-                _product.value = UiState.Error(e.toString())
-            }
-            .collect {
-                _product.value = UiState.Success(it)
-            }
 
     }
 }

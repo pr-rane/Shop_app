@@ -12,20 +12,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class GalleryViewModel(private val productRepo: ProductsRepo) : ViewModel() {
-    private val _categories = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
-
-    val categories: StateFlow<UiState<List<String>>> = _categories
+    val categories: StateFlow<UiState<List<String>>> = productRepo.categories
 
 
     init {
         viewModelScope.launch {
             productRepo.getCategories()
-                .catch { e ->
-                    _categories.value = UiState.Error(e.toString())
-                }
-                .collect {
-                    _categories.value = UiState.Success(it)
-                }
         }
     }
 
