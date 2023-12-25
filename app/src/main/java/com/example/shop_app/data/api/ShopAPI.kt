@@ -10,7 +10,6 @@ import javax.inject.Singleton
 @Singleton
 interface ShopAPI {
 
-    @Headers("Content-Type: application/json")
     @GET("products")
     suspend fun getAllProducts(
         @Query("limit")limit: Int? = null,
@@ -33,10 +32,7 @@ interface ShopAPI {
         @Path("category") category: String?
     ):List<Product>
 
-    @POST("auth/login")
-    suspend fun loginUser(
-        @Body login: LoginData
-    ):LoginResponse
+
 
 
 }

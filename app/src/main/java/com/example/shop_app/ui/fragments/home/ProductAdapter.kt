@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.shop_app.R
 import com.example.shop_app.data.models.entities.Product
 import com.example.shop_app.databinding.ListItemProductBinding
 import com.example.shop_app.ui.extensions.loadImage
@@ -29,9 +30,9 @@ class ProductAdapter(val onProductClicked: (id: Int)-> Unit) : RecyclerView.Adap
             product?.let {
                 productName.text = product.title
                 productImage.loadImage(product.image)
-                productPrice.text = product.price.toString()
-                productRate.rating = product.rating?.count?.toFloat() ?: 0.0f
-                productRateCount.text = product.rating?.rate.toString()
+                productPrice.text = holder.itemView.context.getString(R.string.rupee_format,product.price.toString())
+                productRate.rating = product.rating?.rate?.toFloat() ?: 0.0f
+                productRateCount.text = product.rating?.count.toString()
 
                 root.setOnClickListener {
                     product.id?.let {

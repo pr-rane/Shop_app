@@ -16,5 +16,7 @@
     <string name="username_edittxt">Username</string>
     <string name="password_edittxt">Password</string>
     <string name="login_btn">login</string>
+    <string name="error_no_connection">No Internet connection</string>
+    <string name="rupee_format">%1$s RS</string>
 
 </resources>

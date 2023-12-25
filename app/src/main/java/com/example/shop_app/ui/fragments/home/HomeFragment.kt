@@ -1,31 +1,30 @@
 package com.example.shop_app.ui.fragments.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.shop_app.R
+import com.example.shop_app.data.models.entities.Product
 import com.example.shop_app.databinding.FragmentHomeBinding
 import com.example.shop_app.ui.base.UiState
-import com.example.shop_app.ui.extensions.getActivityComponent
-import com.example.shop_app.ui.viewmodels.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+@AndroidEntryPoint
+class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    private var _binding: FragmentHomeBinding? = null
-//    private lateinit var homeViewModel: HomeViewModel
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private var binding: FragmentHomeBinding?=null
 
-    private val homeViewModel: HomeViewModel by viewModels {
-        getActivityComponent().viewModelsFactory()
-    }
     private lateinit var productAdapter: ProductAdapter
     private var categoryName: String? = null
 
@@ -33,41 +32,41 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-//        val api = ShopClient.publicApi
-//        val productsRepo = ProductsRepo(api)
-//        homeViewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(HomeViewModel::class.java)
-        productAdapter = ProductAdapter { openProduct(it) }
-
-        arguments?.let {
-            categoryName = it.getString(resources.getString(R.string.arg_category_name))
-        }
-
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        _binding?.productRecycler?.run {
-            layoutManager = GridLayoutManager(context, 2)
-            adapter = productAdapter
-        }
-        return _binding?.root
+    ): View {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding!!.root
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        homeViewModel = (requireActivity().application as ShopApplication).activityComponent.getHomeVM()
-//        val viewModelFactory = (activity as MainActivity).viewModelFactory
+        productAdapter = ProductAdapter { openProduct(it) }
 
-//        homeViewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
-//        if (categoryName==null) {
-//
-//        }else {
-            homeViewModel.fetchProductsByCategory(categoryName)
-//        }
+
+        arguments?.let {
+            categoryName = it.getString(resources.getString(R.string.arg_category_name))
+        }
+        binding?.productRecycler?.let {
+            it.layoutManager = GridLayoutManager(context, 2)
+            it.adapter = productAdapter
+        }
+        homeViewModel.fetchProductsByCategory(categoryName)
+        binding?.productsSwipeRefreshLayout?.setOnRefreshListener(this)
         lifecycleScope.launch {
             homeViewModel.products.collect{
-                if (it is UiState.Success){
-                    productAdapter.updateProductList(it.data)
-                    Log.e("productID:",it.data.get(0).id.toString())
+                when (it) {
+                    is UiState.Not_Started ->homeViewModel.fetchProductsByCategory(categoryName)
+                    is UiState.Success -> {
+                        productAdapter.updateProductList(it.data)
+                        stopShimmer()
+                    }
+                    is UiState.Error -> {
+                        stopShimmer()
+                        Toast.makeText(context,it.message,Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        startShimmer()
+                    }
                 }
             }
         }
@@ -84,6 +83,28 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
+    }
+
+    override fun onRefresh() {
+        when (homeViewModel.products.value) {
+            is UiState.Error ->{
+                homeViewModel.fetchProductsByCategory(categoryName)
+            }
+            else -> {}
+        }
+        binding?.productsSwipeRefreshLayout?.isRefreshing = false
+    }
+    private fun startShimmer() {
+        binding?.productsShimmer?.startShimmer()
+        binding?.productsShimmer?.visibility = View.VISIBLE
+        binding?.productsSwipeRefreshLayout?.visibility = View.GONE
+    }
+
+    private fun stopShimmer() {
+        binding?.productsShimmer?.stopShimmer()
+        binding?.productsShimmer?.visibility = View.GONE
+        binding?.productsSwipeRefreshLayout?.visibility = View.VISIBLE
+        binding?.productsSwipeRefreshLayout?.isRefreshing = false
     }
 }

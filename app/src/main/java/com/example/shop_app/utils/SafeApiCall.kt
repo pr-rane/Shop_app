@@ -3,6 +3,7 @@ package com.example.shop_app.utils
 import com.example.shop_app.ui.base.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 
 
 interface SafeApiCall {
@@ -12,7 +13,11 @@ interface SafeApiCall {
         return withContext(Dispatchers.IO) {
             try {
                 UiState.Success(apiCall.invoke())
-            } catch (throwable: Throwable) {
+            }
+            catch (error: UnknownHostException){
+                UiState.Error("There is no Internet connection")
+            }
+            catch (throwable: Throwable) {
                 UiState.Error(throwable.message.toString())
                 }
             }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,77 +12,79 @@
     app:cardUseCompatPadding="true"
     app:contentPadding="0dp"
     android:id="@+id/productCard"
-    app:cardBackgroundColor="#ffffff">
+    app:cardBackgroundColor="#FDE3F8">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/productdetail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        >
+            android:padding="10dp">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/productImage"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="200dp"
-                tools:srcCompat="@tools:sample/avatars"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toTopOf="@+id/productName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/productName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:layout_gravity="center"
+                android:text="product name"
                 android:textAlignment="center"
-                android:text="product name" />
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/productPrice"
+                app:layout_constraintEnd_toEndOf="@+id/productImage"
+                app:layout_constraintStart_toStartOf="@+id/productImage" />
 
-        <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/productPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:text="10rs"
                 android:textAlignment="center"
-                android:text="10rs" />
+                app:layout_constraintBottom_toTopOf="@+id/productRate"
+                app:layout_constraintEnd_toEndOf="@+id/productName"
+                app:layout_constraintStart_toStartOf="@+id/productName" />
 
-            <RelativeLayout
-                android:id="@+id/relative_rating"
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/productBuyBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:layout_weight="0"
+                android:text="@string/addcart_btn"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/productRate"
+                app:layout_constraintStart_toStartOf="@+id/productRate" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/productRateCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="rate count"
+                app:layout_constraintBottom_toBottomOf="@+id/productRate"
+                app:layout_constraintStart_toEndOf="@+id/productRate"
+                app:layout_constraintTop_toTopOf="@+id/productRate" />
 
             <RatingBar
                 android:id="@+id/productRate"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:rating="3" />
+                android:rating="3"
+                app:layout_constraintBottom_toTopOf="@+id/productBuyBtn"
+                app:layout_constraintEnd_toEndOf="@+id/productImage"
+                app:layout_constraintStart_toStartOf="@+id/productImage" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/productRateCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/productRate"
-                    android:text="rate count" />
-
-            </RelativeLayout>
-    </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/productBuyBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/addcart_btn"
-                android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:layout_weight="0"
-                />
-        </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

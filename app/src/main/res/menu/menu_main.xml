@@ -7,7 +7,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_menu_home"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_gallery"
@@ -18,7 +18,9 @@
                     android:checkableBehavior="single"/>
             </menu>
         </item>
-
-
+        <item
+            android:id="@+id/nav_login"
+            android:icon="@drawable/ic_menu_login"
+            android:title="@string/menu_login" />
     </group>
 </menu>

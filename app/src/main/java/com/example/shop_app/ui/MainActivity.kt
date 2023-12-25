@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
@@ -17,20 +18,21 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.shop_app.R
-import com.example.shop_app.ShopApplication
+import com.example.shop_app.data.models.responses.LoginResponse
 import com.example.shop_app.databinding.ActivityMainBinding
-import com.example.shop_app.di.component.ActivityComponent
-import com.example.shop_app.di.component.DaggerActivityComponent
-import com.example.shop_app.di.module.ActivityModule
 import com.example.shop_app.ui.base.UiState
-import com.example.shop_app.ui.base.ViewModelFactory
-import com.example.shop_app.ui.viewmodels.LoginViewModel
-import com.example.shop_app.ui.viewmodels.GalleryViewModel
+import com.example.shop_app.ui.connection.ConnectivityViewModel
+import com.example.shop_app.ui.fragments.auth.LoginViewModel
+import com.example.shop_app.ui.fragments.gallery.GalleryViewModel
+import com.example.shop_app.ui.fragments.home.HomeViewModel
+import com.example.shop_app.ui.fragments.product.ProductViewModel
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     companion object{
@@ -39,35 +41,21 @@ class MainActivity : AppCompatActivity() {
     }
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    lateinit var galleryViewModel: GalleryViewModel
-    lateinit var authViewModel: LoginViewModel
+    private val authViewModel: LoginViewModel by viewModels()
+    private val  connectivityViewModel: ConnectivityViewModel by viewModels()
+    private val  galleryViewModel: GalleryViewModel by viewModels()
+    private val  homeViewModel: HomeViewModel by viewModels()
+    private val  productViewModel: ProductViewModel by viewModels()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var sharedPreferences: SharedPreferences
 
-    lateinit var activityComponent: ActivityComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val appComponent = (application as ShopApplication).appComponent
-        activityComponent = DaggerActivityComponent
-            .builder()
-            .appComponent(appComponent)
-            .activityModule(ActivityModule(this))
-            .build()
-        activityComponent.inject(this)
+
         super.onCreate(savedInstanceState)
 
         sharedPreferences = getSharedPreferences(PREF_FILE_AUTH, MODE_PRIVATE)
-//        val api = ShopClient.providesShopAPI()
-//        val productsRepo = ProductsRepo(api)
-//        galleryViewModel =
-//            ViewModelProvider(this,ViewModelFactory(productsRepo)).get(GalleryViewModel::class.java)
-//
-//        authViewModel = ViewModelProvider(this,ViewModelFactory(productsRepo)).get(LoginViewModel::class.java)
-        authViewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
-        galleryViewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -106,20 +94,34 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        connectivityViewModel.isConnected.observe(this@MainActivity) { hasConnection ->
+            binding.appBarMain.actionBarMessage.visibility = if (!hasConnection) View.VISIBLE else View.GONE
+            if (hasConnection)
+            {
+                homeViewModel.updateProductListOnConnectionReestablish()
+                productViewModel.updateProductListOnConnectionReestablish()
+                galleryViewModel.updateProductListOnConnectionReestablish()
+            }
+        }
+
         lifecycleScope.launch {
-            authViewModel.user.collect{
-                if (it is UiState.Success){
-                    updateMenu(it.data)
-                    it.data?.let { token->
-                        sharedPreferences.edit{
-                            putString(PREF_KEY_TOKEN,token)
+            authViewModel.user.collect {
+                when (it) {
+                    is UiState.Success -> {
+                        updateMenu(it.data)
+                        it.data.token?.let { token ->
+                            sharedPreferences.edit {
+                                putString(PREF_KEY_TOKEN, token)
+                            }
+                        } ?: run {
+                            sharedPreferences.edit {
+                                remove(PREF_KEY_TOKEN)
+                            }
                         }
-                    } ?: run{
-                        sharedPreferences.edit{
-                            remove(PREF_KEY_TOKEN)
-                        }
+                        navController.navigateUp()
                     }
-                    navController.navigateUp()
+                    is UiState.Error -> Toast.makeText(this@MainActivity,"Error While Logging in",Toast.LENGTH_SHORT).show()
+                    else -> {}
                 }
             }
         }
@@ -129,39 +131,38 @@ class MainActivity : AppCompatActivity() {
                 val menu = navView.menu.getItem(1)?.subMenu
                 menu?.also { submenu ->
                     when (it) {
+                        is UiState.Not_Started ->galleryViewModel.getCategories()
                         is UiState.Success -> {
                             for (category in it.data) {
                                 submenu.add(R.id.category_group, Random().nextInt(), Menu.NONE, category)
                             }
                         }
-                        is UiState.Loading -> {
-                        }
                         is UiState.Error -> {
-                            //Handle Error
-                            Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_LONG)
+                            Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_SHORT)
                                 .show()
                         }
+                        else ->{}
                     }
                 }
             }
         }
     }
     
-    private fun updateMenu(user: String?){
-        when(user){
-            is String -> {
-                binding.navView.menu.clear()
-                binding.navView.inflateMenu(R.menu.menu_main)
-
+    private fun updateMenu(user: LoginResponse){
+        binding.apply {
+            if (user.token.isNullOrEmpty()|| user.token.isBlank()){
+                navView.apply {
+                    menu.findItem(R.id.nav_login).isVisible = true
+                }
+            }else{
+                navView.apply {
+                    menu.findItem(R.id.nav_login).isVisible = false
+                }
             }
-            else ->{
-                binding.navView.menu.clear()
-                binding.navView.inflateMenu(R.menu.menu_main_guest)
-            }
-
         }
-
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
