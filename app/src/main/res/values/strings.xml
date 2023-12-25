@@ -13,6 +13,7 @@
     <string name="arg_product_id">PRODUCT_ID</string>
     <string name="arg_category_name">CATEGORY_NAME</string>
     <string name="menu_login">Login</string>
+    <string name="menu_logout">Logout</string>
     <string name="username_edittxt">Username</string>
     <string name="password_edittxt">Password</string>
     <string name="login_btn">login</string>

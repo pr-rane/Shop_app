@@ -1,10 +1,8 @@
 package com.example.shop_app.data.api
 
-import com.example.shop_app.data.models.entities.LoginData
-import com.example.shop_app.data.models.entities.Product
-import com.example.shop_app.data.models.responses.LoginResponse
-import com.example.shop_app.data.models.responses.UserResponse
-import retrofit2.Response
+import com.example.shop_app.data.repo.user.model.LoginData
+import com.example.shop_app.data.repo.user.request.UserRequest
+import com.example.shop_app.data.repo.user.responses.LoginResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -25,4 +23,9 @@ interface ShopAuthAPI {
     suspend fun getUserById(
         @Path("id") id: Int
     ): LoginResponse
+
+    @POST("users")
+    suspend fun signup(
+        @Body userRequest: UserRequest
+    ): String
 }

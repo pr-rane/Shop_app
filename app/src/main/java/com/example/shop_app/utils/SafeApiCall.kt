@@ -1,6 +1,5 @@
 package com.example.shop_app.utils
 
-import com.example.shop_app.ui.base.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.UnknownHostException

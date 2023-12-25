@@ -1,6 +1,7 @@
-package com.example.shop_app.data.models.entities
+package com.example.shop_app.data.repo.product.model
 
 
+import com.example.shop_app.data.repo.product.model.Rating
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

@@ -1,9 +1,6 @@
 package com.example.shop_app.data.api
 
-import com.example.shop_app.data.models.entities.LoginData
-import com.example.shop_app.data.models.entities.Product
-import com.example.shop_app.data.models.responses.LoginResponse
-import retrofit2.Response
+import com.example.shop_app.data.repo.product.model.Product
 import retrofit2.http.*
 import javax.inject.Singleton
 
@@ -21,7 +18,7 @@ interface ShopAPI {
     suspend fun getProductById(
         @Path("id") id: Int
     )
-    :Product
+    : Product
 
     @GET("products/categories")
     suspend fun getAllCategories()

@@ -32,6 +32,7 @@ The Shop_app has a single activity that hosts all fragments while the Navigation
 - [Flow](https://developer.android.com/kotlin/flow)
 - [Glide](https://bumptech.github.io/glide/)
 - [Facebook's shimmer effect](https://github.com/facebook/shimmer-android)
+- [Preferences DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
 
 <p>
 star ⭐ the repo it motivates me to share more open source

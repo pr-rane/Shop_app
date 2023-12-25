@@ -1,6 +1,5 @@
 package com.example.shop_app.ui.fragments.product
 
-import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,14 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.shop_app.R
 import com.example.shop_app.databinding.FragmentProductBinding
-import com.example.shop_app.ui.base.UiState
+import com.example.shop_app.utils.UiState
 import com.example.shop_app.ui.extensions.loadImage
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -55,7 +51,7 @@ class ProductFragment : Fragment() {
                             binding?.apply {
                                 productName.text = product.title
                                 productImage.loadImage(product.image)
-                                productPrice.text = getString(R.string.rupee_format,product.price)
+                                productPrice.text = getString(R.string.rupee_format,product.price.toString())
                                 productDescription.text = product.description
                                 productRate.rating = product.rating?.rate?.toFloat() ?: 0.0f
                                 productRateCount.text = product.rating?.count.toString()

@@ -13,9 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.shop_app.R
-import com.example.shop_app.data.models.entities.Product
 import com.example.shop_app.databinding.FragmentHomeBinding
-import com.example.shop_app.ui.base.UiState
+import com.example.shop_app.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.example.shop_app.data.models.entities
+package com.example.shop_app.data.repo.user.model
 
 
 import com.squareup.moshi.Json

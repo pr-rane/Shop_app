@@ -1,8 +1,8 @@
 package com.example.shop_app.data.repo.product
 
 import com.example.shop_app.data.api.ShopAPI
-import com.example.shop_app.data.models.entities.Product
-import com.example.shop_app.ui.base.UiState
+import com.example.shop_app.data.repo.product.model.Product
+import com.example.shop_app.utils.UiState
 
 
 class RemoteProductsRepo(private val api: ShopAPI) :

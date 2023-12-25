@@ -10,6 +10,7 @@ class RequestInterceptor : Interceptor {
         val originalRequest: Request = chain.request()
         val modifiedRequest = originalRequest.newBuilder()
             .header("Content-Type", "application/json")
+            .header("Content-Length", "83")
             .header("Host", originalRequest.url().host())
             .build()
         return chain.proceed(modifiedRequest)

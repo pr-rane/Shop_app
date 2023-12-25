@@ -1,14 +1,10 @@
 package com.example.shop_app
 
-import com.example.shop_app.data.api.RequestInterceptor
-import com.example.shop_app.data.api.ShopAPI
 import com.example.shop_app.data.api.ShopAuthAPI
-import com.example.shop_app.data.models.entities.LoginData
+import com.example.shop_app.data.repo.user.model.LoginData
 import kotlinx.coroutines.runBlocking
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before

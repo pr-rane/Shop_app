@@ -1,8 +1,8 @@
-package com.example.shop_app.data.models.responses
+package com.example.shop_app.data.repo.user.responses
 
 
-import com.example.shop_app.data.models.entities.Address
-import com.example.shop_app.data.models.entities.Name
+import com.example.shop_app.data.repo.user.model.Address
+import com.example.shop_app.data.repo.user.model.Name
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

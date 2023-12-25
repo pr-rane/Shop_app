@@ -11,16 +11,15 @@ import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.shop_app.R
-import com.example.shop_app.data.models.responses.LoginResponse
+import com.example.shop_app.data.repo.user.responses.LoginResponse
 import com.example.shop_app.databinding.ActivityMainBinding
-import com.example.shop_app.ui.base.UiState
+import com.example.shop_app.utils.UiState
 import com.example.shop_app.ui.connection.ConnectivityViewModel
 import com.example.shop_app.ui.fragments.auth.LoginViewModel
 import com.example.shop_app.ui.fragments.gallery.GalleryViewModel
@@ -30,7 +29,6 @@ import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -83,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext,"$item.groupId",Toast.LENGTH_LONG).show()
                 }
                 "Login" -> navController.navigate(R.id.nav_login)
+                "Logout" -> authViewModel.logout()
                 else ->
                     if (item.groupId == R.id.category_group){
                         loadCategoryFragment(item.title.toString())
@@ -110,17 +109,17 @@ class MainActivity : AppCompatActivity() {
                     is UiState.Success -> {
                         updateMenu(it.data)
                         it.data.token?.let { token ->
-                            sharedPreferences.edit {
-                                putString(PREF_KEY_TOKEN, token)
-                            }
+                           authViewModel.saveUserToken(token)
                         } ?: run {
-                            sharedPreferences.edit {
-                                remove(PREF_KEY_TOKEN)
-                            }
+                           authViewModel.clearUserToken()
                         }
                         navController.navigateUp()
                     }
-                    is UiState.Error -> Toast.makeText(this@MainActivity,"Error While Logging in",Toast.LENGTH_SHORT).show()
+                    is UiState.Error -> {
+                        updateMenu(LoginResponse())
+                        Toast.makeText(this@MainActivity,"Error While Logging in",Toast.LENGTH_SHORT).show()
+                        authViewModel.clearUserToken()
+                    }
                     else -> {}
                 }
             }
@@ -153,10 +152,12 @@ class MainActivity : AppCompatActivity() {
             if (user.token.isNullOrEmpty()|| user.token.isBlank()){
                 navView.apply {
                     menu.findItem(R.id.nav_login).isVisible = true
+                    menu.findItem(R.id.nav_logout).isVisible = false
                 }
             }else{
                 navView.apply {
                     menu.findItem(R.id.nav_login).isVisible = false
+                    menu.findItem(R.id.nav_logout).isVisible = true
                 }
             }
         }

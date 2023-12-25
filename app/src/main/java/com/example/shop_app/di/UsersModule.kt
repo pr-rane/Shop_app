@@ -6,7 +6,9 @@ import com.example.shop_app.data.api.ShopAPI
 import com.example.shop_app.data.api.ShopAuthAPI
 import com.example.shop_app.data.repo.user.RemoteUserAuth
 import com.example.shop_app.data.repo.user.UserAuthInterface
+import com.example.shop_app.data.repo.user.responses.LoginResponse
 import com.example.shop_app.utils.Constants.Base_Url
+import com.example.shop_app.utils.datastore.PreferenceDataStore
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -47,6 +49,7 @@ object UsersModule {
 
     @Singleton
     @Provides
-    fun provideUserAuthenticator(shopAuthAPI: ShopAuthAPI): UserAuthInterface =
-        RemoteUserAuth(shopAuthAPI)
+    fun provideUserAuthenticator(shopAuthAPI: ShopAuthAPI,
+    preferenceDataStore: PreferenceDataStore): UserAuthInterface<LoginResponse> =
+        RemoteUserAuth(shopAuthAPI,preferenceDataStore)
 }
