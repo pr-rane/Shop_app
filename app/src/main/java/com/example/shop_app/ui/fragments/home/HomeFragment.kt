@@ -8,7 +8,9 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -52,19 +54,23 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         homeViewModel.fetchProductsByCategory(categoryName)
         binding?.productsSwipeRefreshLayout?.setOnRefreshListener(this)
         lifecycleScope.launch {
-            homeViewModel.products.collect{
-                when (it) {
-                    is UiState.Not_Started ->homeViewModel.fetchProductsByCategory(categoryName)
-                    is UiState.Success -> {
-                        productAdapter.updateProductList(it.data)
-                        stopShimmer()
-                    }
-                    is UiState.Error -> {
-                        stopShimmer()
-                        Toast.makeText(context,it.message,Toast.LENGTH_SHORT).show()
-                    }
-                    else -> {
-                        startShimmer()
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.products.collect {
+                    when (it) {
+                        is UiState.Not_Started -> homeViewModel.fetchProductsByCategory(categoryName)
+                        is UiState.Success -> {
+                            productAdapter.updateProductList(it.data)
+                            stopShimmer()
+                        }
+
+                        is UiState.Error -> {
+                            stopShimmer()
+                            Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                        }
+
+                        else -> {
+                            startShimmer()
+                        }
                     }
                 }
             }

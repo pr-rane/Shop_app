@@ -11,7 +11,9 @@ import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -75,15 +77,15 @@ class MainActivity : AppCompatActivity() {
 //        navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener { item ->
             // Handle navigation item clicks here
-            when(item.title){
-                "Home" ->{
+            when (item.title) {
+                "Home" -> {
                     navController.navigate(R.id.nav_home)
-                    Toast.makeText(applicationContext,"$item.groupId",Toast.LENGTH_LONG).show()
                 }
+
                 "Login" -> navController.navigate(R.id.nav_login)
                 "Logout" -> authViewModel.logout()
                 else ->
-                    if (item.groupId == R.id.category_group){
+                    if (item.groupId == R.id.category_group) {
                         loadCategoryFragment(item.title.toString())
                     }
             }
@@ -94,9 +96,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         connectivityViewModel.isConnected.observe(this@MainActivity) { hasConnection ->
-            binding.appBarMain.actionBarMessage.visibility = if (!hasConnection) View.VISIBLE else View.GONE
-            if (hasConnection)
-            {
+            binding.appBarMain.actionBarMessage.visibility =
+                if (!hasConnection) View.VISIBLE else View.GONE
+            if (hasConnection) {
                 homeViewModel.updateProductListOnConnectionReestablish()
                 productViewModel.updateProductListOnConnectionReestablish()
                 galleryViewModel.updateProductListOnConnectionReestablish()
@@ -104,46 +106,60 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            authViewModel.user.collect {
-                when (it) {
-                    is UiState.Success -> {
-                        updateMenu(it.data)
-                        it.data.token?.let { token ->
-                           authViewModel.saveUserToken(token)
-                        } ?: run {
-                           authViewModel.clearUserToken()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                authViewModel.user.collect {
+                    when (it) {
+                        is UiState.Success -> {
+                            updateMenu(it.data)
+                            it.data.token?.let { token ->
+                                authViewModel.saveUserToken(token)
+                            } ?: run {
+                                authViewModel.clearUserToken()
+                            }
+//                            navController.navigateUp()
                         }
-                        navController.navigateUp()
+
+                        is UiState.Error -> {
+                            updateMenu(LoginResponse())
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Error While Logging in",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            authViewModel.clearUserToken()
+                        }
+
+                        else -> {}
                     }
-                    is UiState.Error -> {
-                        updateMenu(LoginResponse())
-                        Toast.makeText(this@MainActivity,"Error While Logging in",Toast.LENGTH_SHORT).show()
-                        authViewModel.clearUserToken()
-                    }
-                    else -> {}
                 }
             }
         }
 
         lifecycleScope.launch {
-            galleryViewModel.categories.collect {
-                val menu = navView.menu.getItem(1)?.subMenu
-                menu?.also { submenu ->
-                    when (it) {
-                        is UiState.Not_Started ->galleryViewModel.getCategories()
-                        is UiState.Success -> {
-                            for (category in it.data) {
-                                submenu.add(R.id.category_group, Random().nextInt(), Menu.NONE, category)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                galleryViewModel.categories.collect {
+                    val menu = navView.menu.getItem(1)?.subMenu
+                    menu?.also { submenu ->
+                        when (it) {
+                            is UiState.Not_Started -> galleryViewModel.getCategories()
+                            is UiState.Success -> {
+                                submenu.clear()
+                                for (category in it.data) {
+                                    submenu.add(R.id.category_group, Random().nextInt(), Menu.NONE, category)
+                                }
                             }
+
+                            is UiState.Error -> {
+                                Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            else -> {}
                         }
-                        is UiState.Error -> {
-                            Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        else ->{}
                     }
                 }
             }
+
         }
     }
     

@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.shop_app.R
 import com.example.shop_app.databinding.FragmentProductBinding
 import com.example.shop_app.utils.UiState
@@ -40,31 +42,38 @@ class ProductFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            viewModel.product.collect{
-                when(it){
-                    is UiState.Not_Started ->
-                        productId?.let {
-                            viewModel.fetchProduct(it)
-                        }
-                    is UiState.Success->{
-                        it.data.let {product ->
-                            binding?.apply {
-                                productName.text = product.title
-                                productImage.loadImage(product.image)
-                                productPrice.text = getString(R.string.rupee_format,product.price.toString())
-                                productDescription.text = product.description
-                                productRate.rating = product.rating?.rate?.toFloat() ?: 0.0f
-                                productRateCount.text = product.rating?.count.toString()
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.product.collect {
+                    when (it) {
+                        is UiState.Not_Started ->
+                            productId?.let {
+                                viewModel.fetchProduct(it)
+                            }
+
+                        is UiState.Success -> {
+                            it.data.let { product ->
+                                binding?.apply {
+                                    productName.text = product.title
+                                    productImage.loadImage(product.image)
+                                    productPrice.text =
+                                        getString(R.string.rupee_format, product.price.toString())
+                                    productDescription.text = product.description
+                                    productRate.rating = product.rating?.rate?.toFloat() ?: 0.0f
+                                    productRateCount.text = product.rating?.count.toString()
+                                }
                             }
                         }
+
+                        is UiState.Error -> {
+                            binding?.productLoader?.visibility = View.GONE
+                            Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                        }
+
+                        else -> {
+                            binding?.productLoader?.visibility = View.VISIBLE
+                        }
                     }
-                    is UiState.Error -> {
-                        binding?.productLoader?.visibility = View.GONE
-                        Toast.makeText(context,it.message, Toast.LENGTH_SHORT).show()
-                    }
-                    else -> {
-                        binding?.productLoader?.visibility = View.VISIBLE
-                    }
+
                 }
 
             }

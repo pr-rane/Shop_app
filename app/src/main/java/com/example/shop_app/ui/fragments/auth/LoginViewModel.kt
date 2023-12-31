@@ -27,7 +27,7 @@ class LoginViewModel @Inject constructor(
 
     fun login(email: String, password: String){
         _user.value = UiState.Loading
-        viewModelScope.launch(Dispatchers.Main){
+        viewModelScope.launch{
             _user.value = userAuthInterface.login(email,password)
         }
     }

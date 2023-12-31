@@ -22,7 +22,7 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/productImage"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toTopOf="@+id/productName"
