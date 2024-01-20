@@ -21,9 +21,6 @@ class LoginViewModel @Inject constructor(
     val user: StateFlow<UiState<LoginResponse>>
         get() = _user
 
-    init {
-        loadUserToken()
-    }
 
     fun login(email: String, password: String){
         _user.value = UiState.Loading

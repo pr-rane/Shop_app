@@ -44,7 +44,7 @@ class ShopClientTests {
     fun apitest(){
         runBlocking {
             val logindata = api.loginUser(LoginData("mor_2314", "83r5^_"))
-            Assert.assertNull(logindata.token)
+            Assert.assertNotNull(logindata.token)
         }
 
     }

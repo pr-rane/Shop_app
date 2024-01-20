@@ -47,19 +47,18 @@ class MainActivity : AppCompatActivity() {
     private val  homeViewModel: HomeViewModel by viewModels()
     private val  productViewModel: ProductViewModel by viewModels()
 
-    private lateinit var sharedPreferences: SharedPreferences
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
         super.onCreate(savedInstanceState)
 
-        sharedPreferences = getSharedPreferences(PREF_FILE_AUTH, MODE_PRIVATE)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        galleryViewModel.getCategories()
+        authViewModel.loadUserToken()
+        homeViewModel.fetchProductsByCategory()
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout

@@ -20,14 +20,7 @@ class HomeViewModel @Inject constructor(private val productsRepoInterface: Produ
         get() = _products
 
 
-    init {
-        _products.value = UiState.Loading
-        viewModelScope.launch {
-            _products.value = productsRepoInterface.getProducts()
-        }
-    }
-
-    fun fetchProductsByCategory(category: String?){
+    fun fetchProductsByCategory(category: String?=null){
         _products.value = UiState.Loading
         viewModelScope.launch {
             _products.value = if (category == null) {

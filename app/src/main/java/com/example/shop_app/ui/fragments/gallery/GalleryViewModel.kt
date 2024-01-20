@@ -16,9 +16,6 @@ class GalleryViewModel @Inject constructor(private val productsRepoInterface: Pr
     val categories: StateFlow<UiState<List<String>>>
         get() = _categories
 
-    init {
-        getCategories()
-    }
 
 
     fun getCategories(){
